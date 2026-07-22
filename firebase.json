@@ -8,22 +8,6 @@
     ],
     "rewrites": [
       {
-        "source": "/api/preview",
-        "run": {
-          "serviceId": "preview-api",
-          "region": "us-central1",
-          "pinTag": true
-        }
-      },
-      {
-        "source": "/preview-cache/**",
-        "run": {
-          "serviceId": "preview-api",
-          "region": "us-central1",
-          "pinTag": true
-        }
-      },
-      {
         "source": "**",
         "destination": "/index.html"
       }
