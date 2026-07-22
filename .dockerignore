@@ -1,0 +1,8 @@
+node_modules
+build
+preview-cache
+.git
+.DS_Store
+npm-debug.log
+Dockerfile
+README.md

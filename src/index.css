@@ -1,13 +1,116 @@
+html {
+  height: 100%;
+  height: -webkit-fill-available;
+  background: #111;
+  overflow: hidden;
+}
+
 body {
   margin: 0;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  overflow: hidden;
+  background: #111;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+#root {
+  background: #111;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.microlink_card {
+  background: transparent !important;
+  position: relative !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.microlink_card__media {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  flex: none !important;
+  z-index: 0;
+}
+
+.microlink_card__content {
+  display: none !important;
+}
+
+.microlink_card__content,
+.microlink_card__content_title,
+.microlink_card__content_description,
+.microlink_card__content_url,
+.microlink_card__content p {
+  color: #fff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}
+
+.microlink_card__content_url,
+.microlink_card__content_url p {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.mobile-two-col-card .microlink_card__content {
+  padding: 6px 8px 7px !important;
+}
+
+.mobile-two-col-card .microlink_card__content_title,
+.mobile-two-col-card .microlink_card__content_title p {
+  font-size: 14px !important;
+  line-height: 1.15 !important;
+}
+
+.mobile-two-col-card .microlink_card__content_description,
+.mobile-two-col-card .microlink_card__content_description p {
+  font-size: 9px !important;
+  line-height: 1.2 !important;
+  opacity: 0.94 !important;
+}
+
+.mobile-two-col-card .microlink_card__content_url,
+.mobile-two-col-card .microlink_card__content_url p {
+  font-size: 8px !important;
+  line-height: 1.1 !important;
+}
+
+.preview-expanded-microlink {
+  width: 100%;
+  max-width: 100vw;
+}
+
+.preview-expanded-microlink .microlink_card {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.preview-expanded-microlink .microlink_card__media {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: auto !important;
+}
+
+.preview-expanded-microlink .microlink_card__media img,
+.preview-expanded-microlink .microlink_card__media video {
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
 }
