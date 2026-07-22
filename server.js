@@ -79,6 +79,11 @@ const generateScreenshotPreview = async (targetUrl, cacheKey, requestBaseUrl) =>
   const page = await browser.newPage({
     viewport: { width: 1280, height: 800 },
     deviceScaleFactor: 1,
+    locale: "zh-TW",
+    timezoneId: "Asia/Taipei",
+    extraHTTPHeaders: {
+      "Accept-Language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7"
+    }
   });
 
   try {
