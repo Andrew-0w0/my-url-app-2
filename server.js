@@ -61,11 +61,12 @@ const getBrowser = async () => {
   return browserPromise;
 };
 
-const generateScreenshotPreview = async (targetUrl, cacheKey) => {
+const generateScreenshotPreview = async (targetUrl, cacheKey, requestBaseUrl) => {
   await fs.mkdir(CACHE_DIR, { recursive: true });
   const fileName = `${cacheKey}.jpg`;
   const filePath = path.join(CACHE_DIR, fileName);
-  const publicUrl = `${PUBLIC_BASE_URL}/preview-cache/${fileName}`;
+  const baseUrl = requestBaseUrl || PUBLIC_BASE_URL;
+  const publicUrl = `${baseUrl}/preview-cache/${fileName}`;
 
   try {
     await fs.access(filePath);
@@ -157,7 +158,10 @@ app.get("/api/preview", async (req, res) => {
     let resolvedImageUrl = imageUrl;
     let resolvedImageSource = resolvedImageUrl ? "og" : "screenshot";
     if (!resolvedImageUrl) {
-      resolvedImageUrl = await generateScreenshotPreview(targetUrl, cacheKey);
+      const protocol = req.headers["x-forwarded-proto"] || req.protocol || "http";
+      const host = req.headers.host;
+      const requestBaseUrl = `${protocol}://${host}`;
+      resolvedImageUrl = await generateScreenshotPreview(targetUrl, cacheKey, requestBaseUrl);
       resolvedImageSource = "screenshot";
     }
     const resolvedTitle =
