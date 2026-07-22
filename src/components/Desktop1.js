@@ -424,6 +424,16 @@ export default function Desktop1() {
           x: touchStartTranslate.current.x + dx,
           y: touchStartTranslate.current.y + dy,
         });
+      } else {
+        // 圖片在 100% 大小時，追蹤上下滑動手勢
+        const dy = e.touches[0].clientY - touchStartPoints.current.y;
+        if (Math.abs(dy) > 10) {
+          previewTouchMovedRef.current = true;
+        }
+        setPreviewTranslate({
+          x: 0,
+          y: dy * 0.5, // 阻尼係數，提供拖動拉力感
+        });
       }
     } else if (e.touches.length === 2) {
       // 雙指縮放
@@ -484,6 +494,13 @@ export default function Desktop1() {
       previewMultiTouchGesture.current = false;
       // 若縮放小於一次雙擊增量，則重設回 1 倍並置中
       if (previewScale < minPreviewZoomScale()) {
+        if (e.changedTouches.length === 1 && touchStartPoints.current) {
+          const diffY = e.changedTouches[0].clientY - touchStartPoints.current.y;
+          if (Math.abs(diffY) > 80) {
+            closeExpandedPreview();
+            return;
+          }
+        }
         setPreviewScale(1);
         setPreviewTranslate({ x: 0, y: 0 });
       } else {
