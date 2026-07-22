@@ -77,7 +77,7 @@ const generateScreenshotPreview = async (targetUrl, cacheKey, requestBaseUrl) =>
 
   const browser = await getBrowser();
   const page = await browser.newPage({
-    viewport: { width: 1280, height: 720 },
+    viewport: { width: 1280, height: 800 },
     deviceScaleFactor: 1,
   });
 
@@ -89,6 +89,12 @@ const generateScreenshotPreview = async (targetUrl, cacheKey, requestBaseUrl) =>
       type: "jpeg",
       quality: 78,
       fullPage: false,
+      clip: {
+        x: 240,
+        y: 0,
+        width: 800,
+        height: 800
+      }
     });
     return publicUrl;
   } finally {
