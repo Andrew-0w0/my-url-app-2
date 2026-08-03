@@ -7,7 +7,7 @@ const { chromium } = require("playwright");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const HOST = process.env.HOST || "127.0.0.1";
+const HOST = process.env.HOST || "0.0.0.0";
 const CACHE_DIR = path.join(__dirname, "preview-cache");
 const PUBLIC_BASE_URL = process.env.PREVIEW_PUBLIC_URL || `http://localhost:${PORT}`;
 

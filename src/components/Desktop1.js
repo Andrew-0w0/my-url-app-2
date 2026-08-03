@@ -17,7 +17,7 @@ import {
 import { db, auth, provider, storage } from "../firebase";
 import { signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { Home as HomeOutline, Pencil, PencilOff, GalleryHorizontalEnd, LogOut, Plus, LogIn, MoreHorizontal, Layers, ArrowLeft, FolderMinus, ZoomIn, ZoomOut, Download, X, ClipboardPaste } from "lucide-react";
+import { Home as HomeOutline, Pencil, PencilOff, GalleryHorizontalEnd, LogOut, Plus, LogIn, MoreHorizontal, Layers, ArrowLeft, FolderMinus, ZoomIn, ZoomOut, Download, X, ClipboardPaste, BookOpen } from "lucide-react";
 import HouseIcon from "./HouseIcon";
 
 // 新增一個媒體查詢 hook
@@ -152,8 +152,12 @@ export default function Desktop1() {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewOriginRect, setPreviewOriginRect] = useState(null);
   const [loadingGifDocked, setLoadingGifDocked] = useState(false);
+  const [pendingAddCard, setPendingAddCard] = useState(null);
   const [installPromptEvent, setInstallPromptEvent] = useState(null);
   const [showHomeInstallGuide, setShowHomeInstallGuide] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+  const [tutorialPage, setTutorialPage] = useState(0);
+  const tutorialDragRef = useRef({ startX: 0, dragging: false });
   const [desktopColumns, setDesktopColumns] = useState(4);
   const isPinchPanning = useRef(false);
   const touchStartDistance = useRef(0);
@@ -776,6 +780,14 @@ export default function Desktop1() {
         }
       : null,
     {
+      id: "tutorial",
+      label: "圖卡教學",
+      icon: <BookOpen size={22} />,
+      action: () => {
+        setShowTutorial(true);
+      },
+    },
+    {
       id: "home",
       label: "加入主畫面",
       icon: <Download size={22} />,
@@ -787,7 +799,6 @@ export default function Desktop1() {
       id: "logout",
       label: "登出",
       icon: <LogOut size={22} />,
-      danger: true,
       action: () => {
         handleLogout();
       },
@@ -1038,7 +1049,7 @@ export default function Desktop1() {
     }
 
   // 🚫 未登入時禁止新增
-    if (!user || !user.email?.includes("@gmail.com")) {
+    if (!user) {
       alert("請先登入 Google 帳號再新增圖卡！");
       return;
     }
@@ -1055,6 +1066,18 @@ export default function Desktop1() {
       alert("首頁最多只能新增 30 張圖卡！");
       return;
     }
+
+    const loadingCardId = `pending-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    setPendingAddCard({
+      id: loadingCardId,
+      page: activePage,
+      pageUrl: targetUrl,
+      title: "載入中...",
+      loading: true,
+    });
+    setUrl("");
+    setClipboardUrl("");
+    setClipboardPromptVisible(false);
 
     try {
       let fetchedTitle = "新圖卡";
@@ -1122,11 +1145,10 @@ export default function Desktop1() {
       }
     } catch (err) {
       console.error("新增失敗:", err);
+      alert("新增失敗，請稍後再試。");
+    } finally {
+      setPendingAddCard((current) => (current?.id === loadingCardId ? null : current));
     }
-
-    setUrl("");
-    setClipboardUrl("");
-    setClipboardPromptVisible(false);
   };
 
   const handleClipboardAddUrl = async () => {
@@ -1142,7 +1164,6 @@ export default function Desktop1() {
       return;
     }
 
-    setUrl(targetUrl);
     await handleAddUrl(targetUrl);
     setClipboardPromptVisible(false);
   };
@@ -1349,6 +1370,73 @@ export default function Desktop1() {
   const renderCard = (item) => {
     if (!item) return null;
 
+    if (item.loading) {
+      return (
+        <div
+          key={item.id}
+          style={{
+            width: CARD_SIZE,
+            height: desktopCardHeight,
+            maxWidth: "100%",
+            minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+            position: "relative",
+            userSelect: "none",
+            marginTop: 11,
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              width: CARD_SIZE,
+              maxWidth: "100%",
+              minWidth: 0,
+              height: CARD_PREVIEW_HEIGHT,
+              borderRadius: CARD_RADIUS,
+              overflow: "hidden",
+              zIndex: 1,
+              background: "#111",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <img
+              src={ingGif}
+              alt="載入中"
+              draggable={false}
+              style={{
+                width: 96,
+                height: 96,
+                objectFit: "contain",
+                display: "block",
+              }}
+            />
+          </div>
+          <div
+            style={{
+              width: "100%",
+              fontSize: isMobileTwoCol ? 13 : 15,
+              lineHeight: 1.3,
+              color: "#fff",
+              fontWeight: "bold",
+              marginTop: 8,
+              padding: "0 4px",
+              boxSizing: "border-box",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            載入中...
+          </div>
+        </div>
+      );
+    }
+
     const getCleanTitleFallback = (url) => {
       if (!url) return "網頁圖卡";
       try {
@@ -1371,7 +1459,7 @@ export default function Desktop1() {
       : getCleanTitleFallback(item.pageUrl))
       : item.title;
 
-    const isAnon = !item.email?.includes("@gmail.com");
+    const isAnon = !item.uid;
     const isOwnerByEmail = user && item.email === user.email;
     const previewUrl = item.isGroup ? "" : item.pageUrl;
     const canExpandPreview = Boolean(previewUrl);
@@ -1630,6 +1718,8 @@ const showDeleteButton =
         ? myCards.filter((c) => c.groupId === activeGroupId)
         : myCards.filter((c) => !c.groupId)
       : [];
+  const visiblePendingAddCard = pendingAddCard && pendingAddCard.page === activePage ? pendingAddCard : null;
+  const cardsToRender = visiblePendingAddCard ? [visiblePendingAddCard, ...activeCards] : activeCards;
 
   const handleLogin = async () => {
     try {
@@ -1669,6 +1759,137 @@ const showDeleteButton =
   };
 
   const closeHomeInstallGuide = () => setShowHomeInstallGuide(false);
+
+  const TUTORIAL_SLIDES = [
+    {
+      title: "分享推文",
+      desc: "點擊推文右下方的分享按鈕。",
+      // 頁面內容留空（深灰大卡）
+    },
+    {
+      title: "複製連結",
+      desc: "複製單張卡片的代碼或連結，貼至任何地方分享。",
+    },
+  ];
+
+  const tutorialModal = showTutorial ? (
+    <div
+      onClick={() => { setShowTutorial(false); setTutorialPage(0); }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 4000,
+        background: "rgba(0, 0, 0, 0.85)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {/* 手機外框 */}
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "min(80vw, 300px)",
+          background: "#111",
+          borderRadius: 40,
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          position: "relative",
+          userSelect: "none",
+        }}
+        onTouchStart={(e) => {
+          tutorialDragRef.current = { startX: e.touches[0].clientX, dragging: true };
+        }}
+        onTouchEnd={(e) => {
+          if (!tutorialDragRef.current.dragging) return;
+          const diff = e.changedTouches[0].clientX - tutorialDragRef.current.startX;
+          tutorialDragRef.current.dragging = false;
+          if (diff < -50 && tutorialPage < TUTORIAL_SLIDES.length - 1) setTutorialPage((p) => p + 1);
+          if (diff > 50 && tutorialPage > 0) setTutorialPage((p) => p - 1);
+        }}
+        onMouseDown={(e) => {
+          tutorialDragRef.current = { startX: e.clientX, dragging: true };
+        }}
+        onMouseUp={(e) => {
+          if (!tutorialDragRef.current.dragging) return;
+          const diff = e.clientX - tutorialDragRef.current.startX;
+          tutorialDragRef.current.dragging = false;
+          if (diff < -50 && tutorialPage < TUTORIAL_SLIDES.length - 1) setTutorialPage((p) => p + 1);
+          if (diff > 50 && tutorialPage > 0) setTutorialPage((p) => p - 1);
+        }}
+      >
+        {/* 滑動容器 */}
+        <div style={{ overflow: "hidden" }}>
+          <div
+            style={{
+              display: "flex",
+              width: `${TUTORIAL_SLIDES.length * 100}%`,
+              transform: `translateX(-${tutorialPage * (100 / TUTORIAL_SLIDES.length)}%)`,
+              transition: "transform 300ms cubic-bezier(0.2, 0.9, 0.2, 1)",
+            }}
+          >
+            {TUTORIAL_SLIDES.map((slide, i) => (
+              <div
+                key={i}
+                style={{
+                  width: `${100 / TUTORIAL_SLIDES.length}%`,
+                  flexShrink: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  padding: "28px 16px 0",
+                  boxSizing: "border-box",
+                }}
+              >
+                {/* 深灰大卡 */}
+                <div style={{
+                  width: "100%",
+                  aspectRatio: "3/4",
+                  background: "#1e1e1e",
+                  borderRadius: 16,
+                  marginBottom: 20,
+                  flexShrink: 0,
+                }} />
+
+                {/* 標題 + 說明 */}
+                <div style={{ paddingBottom: 4 }}>
+                  <div style={{ fontSize: 17, fontWeight: 700, color: "#fff", marginBottom: 5 }}>
+                    {slide.title}
+                  </div>
+                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.6 }}>
+                    {slide.desc}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 頁碼圓點 */}
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 6,
+          padding: "14px 0 20px",
+        }}>
+          {TUTORIAL_SLIDES.map((_, i) => (
+            <div
+              key={i}
+              onClick={() => setTutorialPage(i)}
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: i === tutorialPage ? "#fff" : "rgba(255,255,255,0.3)",
+                cursor: "pointer",
+                transition: "background 220ms",
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  ) : null;
 
   const openExpandedPreview = (pageUrl, title = "", imageUrl = "", originRect = null) => {
     if (!pageUrl) return;
@@ -2304,7 +2525,7 @@ const showDeleteButton =
                     onTouchStart={handleMoreButtonTouchStart}
                     onContextMenu={(e) => e.preventDefault()}
                     style={mobileHeaderButtonStyle(
-                      showAccountMenu || editMode ? MOBILE_GLASS_BG_ACTIVE : MOBILE_GLASS_BG
+                      editMode ? MOBILE_GLASS_BG_ACTIVE : MOBILE_GLASS_BG
                     )}
                     title="更多"
                   >
@@ -2545,7 +2766,7 @@ const showDeleteButton =
               }}
             />
           </div>
-        ) : activeCards.length === 0 ? (
+        ) : cardsToRender.length === 0 ? (
           <div
             style={{
               gridColumn: "1 / -1",
@@ -2560,7 +2781,7 @@ const showDeleteButton =
               : "請先登入 Google 帳號"}
           </div>
         ) : (
-          activeCards.map(renderCard)
+          cardsToRender.map(renderCard)
         )}
       </div>
 
@@ -2580,7 +2801,7 @@ const showDeleteButton =
             onTouchStart={handleMoreButtonTouchStart}
             onContextMenu={(e) => e.preventDefault()}
             style={mobileHeaderButtonStyle(
-              showAccountMenu || editMode ? MOBILE_GLASS_BG_ACTIVE : MOBILE_GLASS_BG
+              editMode ? MOBILE_GLASS_BG_ACTIVE : MOBILE_GLASS_BG
             )}
             title="更多"
           >
@@ -2730,6 +2951,7 @@ const showDeleteButton =
         </div>
       )}
       {homeInstallGuide}
+      {tutorialModal}
       {expandedPreviewCard && (
         <div
           onClick={closeExpandedPreview}

@@ -1,6 +1,3 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
-
 jest.mock('@microlink/react', () => {
   const React = require('react');
   return function MicrolinkMock() {
@@ -36,6 +33,16 @@ jest.mock('firebase/auth', () => ({
   },
   signOut: () => Promise.resolve(),
 }));
+
+jest.mock('firebase/storage', () => ({
+  getStorage: () => ({}),
+  ref: () => ({}),
+  uploadBytes: () => Promise.resolve(),
+  getDownloadURL: () => Promise.resolve(''),
+}));
+
+import { render, screen } from '@testing-library/react';
+import App from './App';
 
 test('renders the current URL card interface', () => {
   render(<App />);
