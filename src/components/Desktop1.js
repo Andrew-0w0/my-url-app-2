@@ -1782,27 +1782,23 @@ const showDeleteButton =
         position: "fixed",
         inset: 0,
         zIndex: 4000,
-        background: "rgba(0, 0, 0, 0.85)",
+        background: "rgba(0, 0, 0, 0.9)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
       }}
     >
-      {/* 手機外框 */}
+      {/* 內容容器 (無手機外框) */}
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "min(90vw, 360px)",
-          height: "640px",
-          background: "#0d0d0c",
-          borderRadius: 48,
-          border: "4px solid #2e2e2b",
+          width: 309,
+          height: 544,
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
           position: "relative",
           userSelect: "none",
-          boxShadow: "0 24px 48px rgba(0, 0, 0, 0.6)",
         }}
         onTouchStart={(e) => {
           tutorialDragRef.current = { startX: e.touches[0].clientX, dragging: true };
@@ -1825,31 +1821,6 @@ const showDeleteButton =
           if (diff > 50 && tutorialPage > 0) setTutorialPage((p) => p - 1);
         }}
       >
-        {/* 關閉按鈕 */}
-        <button
-          onClick={() => { setShowTutorial(false); setTutorialPage(0); }}
-          style={{
-            position: "absolute",
-            top: 16,
-            right: 16,
-            zIndex: 10,
-            background: "rgba(255,255,255,0.15)",
-            border: "none",
-            borderRadius: "50%",
-            width: 32,
-            height: 32,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#fff",
-            cursor: "pointer",
-            backdropFilter: "blur(4px)",
-            transition: "background 0.2s",
-          }}
-        >
-          <X size={18} />
-        </button>
-
         {/* 滑動容器 */}
         <div style={{ overflow: "hidden", height: "100%" }}>
           <div
@@ -1871,7 +1842,7 @@ const showDeleteButton =
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "flex-start",
-                  padding: "54px 0 0 0",
+                  padding: "0",
                   boxSizing: "border-box",
                   height: "100%",
                 }}
@@ -1976,7 +1947,7 @@ const showDeleteButton =
         {/* 頁碼圓點 */}
         <div style={{
           position: "absolute",
-          bottom: 20,
+          bottom: 0,
           left: 0,
           right: 0,
           display: "flex",
