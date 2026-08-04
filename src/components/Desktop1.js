@@ -4,6 +4,8 @@ import logo from "../images/Logo.png";
 import authorImage from "../images/images.jpg";
 import ingGif from "../images/ing.gif";
 import failImage from "../images/fail.png";
+import video01 from "../images/01.mp4";
+import video02 from "../images/02.mp4";
 import {
   collection,
   addDoc,
@@ -1764,11 +1766,12 @@ const showDeleteButton =
     {
       title: "分享推文",
       desc: "點擊推文右下方的分享按鈕。",
-      // 頁面內容留空（深灰大卡）
+      video: video01,
     },
     {
       title: "複製連結",
-      desc: "複製單張卡片的代碼或連結，貼至任何地方分享。",
+      desc: "複製想儲存的推文網址。",
+      video: video02,
     },
   ];
 
@@ -1789,14 +1792,17 @@ const showDeleteButton =
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "min(80vw, 300px)",
-          background: "#111",
-          borderRadius: 40,
+          width: "min(90vw, 360px)",
+          height: "640px",
+          background: "#0d0d0c",
+          borderRadius: 48,
+          border: "4px solid #2e2e2b",
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
           position: "relative",
           userSelect: "none",
+          boxShadow: "0 24px 48px rgba(0, 0, 0, 0.6)",
         }}
         onTouchStart={(e) => {
           tutorialDragRef.current = { startX: e.touches[0].clientX, dragging: true };
@@ -1819,12 +1825,38 @@ const showDeleteButton =
           if (diff > 50 && tutorialPage > 0) setTutorialPage((p) => p - 1);
         }}
       >
+        {/* 關閉按鈕 */}
+        <button
+          onClick={() => { setShowTutorial(false); setTutorialPage(0); }}
+          style={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            zIndex: 10,
+            background: "rgba(255,255,255,0.15)",
+            border: "none",
+            borderRadius: "50%",
+            width: 32,
+            height: 32,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#fff",
+            cursor: "pointer",
+            backdropFilter: "blur(4px)",
+            transition: "background 0.2s",
+          }}
+        >
+          <X size={18} />
+        </button>
+
         {/* 滑動容器 */}
-        <div style={{ overflow: "hidden" }}>
+        <div style={{ overflow: "hidden", height: "100%" }}>
           <div
             style={{
               display: "flex",
               width: `${TUTORIAL_SLIDES.length * 100}%`,
+              height: "100%",
               transform: `translateX(-${tutorialPage * (100 / TUTORIAL_SLIDES.length)}%)`,
               transition: "transform 300ms cubic-bezier(0.2, 0.9, 0.2, 1)",
             }}
@@ -1837,29 +1869,107 @@ const showDeleteButton =
                   flexShrink: 0,
                   display: "flex",
                   flexDirection: "column",
-                  padding: "28px 16px 0",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  padding: "54px 0 0 0",
                   boxSizing: "border-box",
+                  height: "100%",
                 }}
               >
-                {/* 深灰大卡 */}
+                {/* 白色大卡 */}
                 <div style={{
-                  width: "100%",
-                  aspectRatio: "3/4",
-                  background: "#1e1e1e",
-                  borderRadius: 16,
-                  marginBottom: 20,
-                  flexShrink: 0,
-                }} />
-
-                {/* 標題 + 說明 */}
-                <div style={{ paddingBottom: 4 }}>
-                  <div style={{ fontSize: 17, fontWeight: 700, color: "#fff", marginBottom: 5 }}>
-                    {slide.title}
+                  width: 309,
+                  height: 472,
+                  background: "#ffffff",
+                  borderRadius: 27,
+                  padding: "14px 14px 24px 14px",
+                  boxSizing: "border-box",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 18,
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                }}>
+                  {/* 黑色影音容器 */}
+                  <div style={{
+                    width: 281,
+                    height: 346,
+                    background: "#080808",
+                    borderRadius: 13,
+                    overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}>
+                    <video
+                      src={slide.video}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                      }}
+                    />
                   </div>
-                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.6 }}>
-                    {slide.desc}
+
+                  {/* 標題 + 說明 */}
+                  <div style={{
+                    padding: "0 4px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                  }}>
+                    <div style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: 16,
+                      fontWeight: 700,
+                      color: "#000000",
+                      lineHeight: "130%",
+                    }}>
+                      {slide.title}
+                    </div>
+                    <div style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: 12.5,
+                      color: "#595959",
+                      lineHeight: "150%",
+                    }}>
+                      {slide.desc}
+                    </div>
                   </div>
                 </div>
+
+                {/* 只有第二個畫面 (索引為 1) 有 下一步 按鈕 */}
+                {i === 1 && (
+                  <button
+                    onClick={() => { setShowTutorial(false); setTutorialPage(0); }}
+                    style={{
+                      marginTop: 22,
+                      width: 170,
+                      height: 50,
+                      borderRadius: 25,
+                      background: "#00C3D0",
+                      border: "none",
+                      color: "#ffffff",
+                      fontSize: 16,
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 6px 16px rgba(0, 195, 208, 0.3)",
+                      transition: "transform 0.15s, background-color 0.15s",
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#00b2bd"}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#00C3D0"}
+                    onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.96)"}
+                    onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
+                  >
+                    下一步
+                  </button>
+                )}
               </div>
             ))}
           </div>
@@ -1867,10 +1977,14 @@ const showDeleteButton =
 
         {/* 頁碼圓點 */}
         <div style={{
+          position: "absolute",
+          bottom: 20,
+          left: 0,
+          right: 0,
           display: "flex",
           justifyContent: "center",
           gap: 6,
-          padding: "14px 0 20px",
+          zIndex: 5,
         }}>
           {TUTORIAL_SLIDES.map((_, i) => (
             <div
