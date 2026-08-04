@@ -1856,12 +1856,13 @@ const showDeleteButton =
                   overflow: "hidden",
                   display: "flex",
                   flexDirection: "column",
+                  position: "relative",
                   boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
                 }}>
                   {/* 黑色影音容器 (滿版，無外框) */}
                   <div style={{
                     width: "100%",
-                    height: 370,
+                    height: 350,
                     background: "#080808",
                     display: "flex",
                     alignItems: "center",
@@ -1883,7 +1884,7 @@ const showDeleteButton =
 
                   {/* 標題 + 說明 */}
                   <div style={{
-                    padding: "16px 20px 20px 20px",
+                    padding: "14px 20px 36px 20px",
                     display: "flex",
                     flexDirection: "column",
                     gap: 6,
@@ -1907,6 +1908,36 @@ const showDeleteButton =
                     }}>
                       {slide.desc}
                     </div>
+                  </div>
+
+                  {/* 頁碼圓點 (在白框內顯示) */}
+                  <div style={{
+                    position: "absolute",
+                    bottom: 18,
+                    left: 0,
+                    right: 0,
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 6,
+                    zIndex: 5,
+                  }}>
+                    {TUTORIAL_SLIDES.map((_, dotIdx) => (
+                      <div
+                        key={dotIdx}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setTutorialPage(dotIdx);
+                        }}
+                        style={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          background: dotIdx === tutorialPage ? "#00C3D0" : "rgba(0, 0, 0, 0.2)",
+                          cursor: "pointer",
+                          transition: "background 220ms",
+                        }}
+                      />
+                    ))}
                   </div>
                 </div>
 
@@ -1942,33 +1973,6 @@ const showDeleteButton =
               </div>
             ))}
           </div>
-        </div>
-
-        {/* 頁碼圓點 */}
-        <div style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          display: "flex",
-          justifyContent: "center",
-          gap: 6,
-          zIndex: 5,
-        }}>
-          {TUTORIAL_SLIDES.map((_, i) => (
-            <div
-              key={i}
-              onClick={() => setTutorialPage(i)}
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: i === tutorialPage ? "#fff" : "rgba(255,255,255,0.3)",
-                cursor: "pointer",
-                transition: "background 220ms",
-              }}
-            />
-          ))}
         </div>
       </div>
     </div>
