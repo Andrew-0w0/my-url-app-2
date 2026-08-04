@@ -1882,20 +1882,16 @@ const showDeleteButton =
                   height: 472,
                   background: "#ffffff",
                   borderRadius: 27,
-                  padding: "14px 14px 24px 14px",
-                  boxSizing: "border-box",
+                  overflow: "hidden",
                   display: "flex",
                   flexDirection: "column",
-                  gap: 18,
                   boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
                 }}>
-                  {/* 黑色影音容器 */}
+                  {/* 黑色影音容器 (滿版，無外框) */}
                   <div style={{
-                    width: 281,
-                    height: 346,
+                    width: "100%",
+                    height: 370,
                     background: "#080808",
-                    borderRadius: 13,
-                    overflow: "hidden",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -1909,17 +1905,19 @@ const showDeleteButton =
                       style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: "contain",
+                        objectFit: "cover",
                       }}
                     />
                   </div>
 
                   {/* 標題 + 說明 */}
                   <div style={{
-                    padding: "0 4px",
+                    padding: "16px 20px 20px 20px",
                     display: "flex",
                     flexDirection: "column",
-                    gap: 4,
+                    gap: 6,
+                    flex: 1,
+                    justifyContent: "center",
                   }}>
                     <div style={{
                       fontFamily: "Inter, sans-serif",
