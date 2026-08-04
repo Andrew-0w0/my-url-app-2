@@ -1793,7 +1793,7 @@ const showDeleteButton =
         onClick={(e) => e.stopPropagation()}
         style={{
           width: 309,
-          height: 544,
+          height: 555,
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
@@ -1840,7 +1840,7 @@ const showDeleteButton =
                   flexShrink: 0,
                   display: "flex",
                   flexDirection: "column",
-                  alignItems: "center",
+                  alignItems: "flex-start",
                   justifyContent: "flex-start",
                   padding: "0",
                   boxSizing: "border-box",
@@ -1853,17 +1853,20 @@ const showDeleteButton =
                   height: 472,
                   background: "#ffffff",
                   borderRadius: 27,
-                  overflow: "hidden",
+                  padding: "14px 14px 24px 14px",
+                  boxSizing: "border-box",
                   display: "flex",
                   flexDirection: "column",
                   position: "relative",
                   boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
                 }}>
-                  {/* 黑色影音容器 (滿版，無外框) */}
+                  {/* 黑色影音容器 */}
                   <div style={{
-                    width: "100%",
-                    height: 350,
+                    width: 281,
+                    height: 346,
                     background: "#080808",
+                    borderRadius: 13,
+                    overflow: "hidden",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -1877,19 +1880,18 @@ const showDeleteButton =
                       style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: "cover",
+                        objectFit: "contain",
                       }}
                     />
                   </div>
 
                   {/* 標題 + 說明 */}
                   <div style={{
-                    padding: "14px 20px 36px 20px",
+                    marginTop: 16,
+                    padding: "0 4px",
                     display: "flex",
                     flexDirection: "column",
-                    gap: 6,
-                    flex: 1,
-                    justifyContent: "center",
+                    gap: 4,
                   }}>
                     <div style={{
                       fontFamily: "Inter, sans-serif",
@@ -1941,19 +1943,19 @@ const showDeleteButton =
                   </div>
                 </div>
 
-                {/* 只有第二個畫面 (索引為 1) 有 下一步 按鈕 */}
+                {/* 只有第二個畫面 (索引為 1) 有 下一步 按鈕 (至左) */}
                 {i === 1 && (
                   <button
                     onClick={() => { setShowTutorial(false); setTutorialPage(0); }}
                     style={{
                       marginTop: 22,
-                      width: 170,
-                      height: 50,
-                      borderRadius: 25,
+                      width: 188,
+                      height: 61,
+                      borderRadius: 30,
                       background: "#00C3D0",
                       border: "none",
                       color: "#ffffff",
-                      fontSize: 16,
+                      fontSize: 17,
                       fontWeight: "bold",
                       cursor: "pointer",
                       display: "flex",
