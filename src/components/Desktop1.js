@@ -1762,6 +1762,9 @@ const showDeleteButton =
 
   const closeHomeInstallGuide = () => setShowHomeInstallGuide(false);
 
+  const TUTORIAL_CARD_WIDTH = 309;
+  const TUTORIAL_SLIDE_GAP = "16pt";
+
   const TUTORIAL_SLIDES = [
     {
       title: "分享推文",
@@ -1822,13 +1825,13 @@ const showDeleteButton =
         }}
       >
         {/* 滑動容器 */}
-        <div style={{ overflow: "hidden", height: "100%" }}>
+        <div style={{ overflow: "hidden", width: TUTORIAL_CARD_WIDTH, height: "100%" }}>
           <div
             style={{
               display: "flex",
-              width: `${TUTORIAL_SLIDES.length * 100}%`,
+              gap: TUTORIAL_SLIDE_GAP,
               height: "100%",
-              transform: `translateX(-${tutorialPage * (100 / TUTORIAL_SLIDES.length)}%)`,
+              transform: `translateX(calc(-1 * ${tutorialPage} * (${TUTORIAL_CARD_WIDTH}px + ${TUTORIAL_SLIDE_GAP})))`,
               transition: "transform 300ms cubic-bezier(0.2, 0.9, 0.2, 1)",
             }}
           >
@@ -1836,20 +1839,20 @@ const showDeleteButton =
               <div
                 key={i}
                 style={{
-                  width: `${100 / TUTORIAL_SLIDES.length}%`,
+                  width: TUTORIAL_CARD_WIDTH,
                   flexShrink: 0,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "flex-start",
                   justifyContent: "flex-start",
-                  padding: "0",
+                  padding: 0,
                   boxSizing: "border-box",
                   height: "100%",
                 }}
               >
                 {/* 白色大卡 */}
                 <div style={{
-                  width: 309,
+                  width: TUTORIAL_CARD_WIDTH,
                   height: 472,
                   background: "#ffffff",
                   borderRadius: 27,
@@ -1880,7 +1883,7 @@ const showDeleteButton =
                       style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: "contain",
+                        objectFit: i === 0 ? "cover" : "contain",
                       }}
                     />
                   </div>
@@ -1934,7 +1937,7 @@ const showDeleteButton =
                           width: 6,
                           height: 6,
                           borderRadius: "50%",
-                          background: dotIdx === tutorialPage ? "#00C3D0" : "rgba(0, 0, 0, 0.2)",
+                          background: dotIdx === tutorialPage ? "#000000" : "#d9d9d9",
                           cursor: "pointer",
                           transition: "background 220ms",
                         }}
@@ -1943,7 +1946,7 @@ const showDeleteButton =
                   </div>
                 </div>
 
-                {/* 只有第二個畫面 (索引為 1) 有 下一步 按鈕 (至左) */}
+                {/* 只有第二個畫面 (索引為 1) 有 下一步 按鈕 (至右) */}
                 {i === 1 && (
                   <button
                     onClick={() => { setShowTutorial(false); setTutorialPage(0); }}
@@ -1961,6 +1964,7 @@ const showDeleteButton =
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      alignSelf: "flex-end",
                       boxShadow: "0 6px 16px rgba(0, 195, 208, 0.3)",
                       transition: "transform 0.15s, background-color 0.15s",
                     }}
