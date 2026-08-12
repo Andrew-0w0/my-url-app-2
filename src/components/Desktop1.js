@@ -1767,12 +1767,12 @@ const showDeleteButton =
 
   const TUTORIAL_SLIDES = [
     {
-      title: "分享推文",
+      title: "製作圖卡",
       desc: "點擊推文右下方的分享按鈕。",
       video: video01,
     },
     {
-      title: "複製連結",
+      title: "製作圖卡",
       desc: "複製想儲存的推文網址。",
       video: video02,
     },
