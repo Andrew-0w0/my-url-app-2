@@ -2007,7 +2007,7 @@ const showDeleteButton =
         </div>
       </div>
     ) : (
-      /* 模式二：教學頁 3 ~ 6 (點擊任意處進入下一頁，無卡片邊框，背景實色純黑，圖片放大至整個畫面) */
+      /* 模式二：教學頁 3 ~ 6 (點擊任意處進入下一頁，無卡片邊框，背景完全透明，圖片放大至整個畫面) */
       <div
         onClick={() => {
           if (tutorialPage < TUTORIAL_SLIDES.length - 1) {
@@ -2021,7 +2021,7 @@ const showDeleteButton =
           position: "fixed",
           inset: 0,
           zIndex: 4000,
-          background: "#000000",
+          background: "transparent",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -2049,38 +2049,6 @@ const showDeleteButton =
               objectFit: "contain",
             }}
           />
-
-          {/* 頁碼圓點 */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: "14%",
-              left: 0,
-              right: 0,
-              display: "flex",
-              justifyContent: "center",
-              gap: 6,
-              zIndex: 5,
-            }}
-          >
-            {TUTORIAL_SLIDES.map((_, dotIdx) => (
-              <div
-                key={dotIdx}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setTutorialPage(dotIdx);
-                }}
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: "50%",
-                  background: dotIdx === tutorialPage ? "#000000" : "#d9d9d9",
-                  cursor: "pointer",
-                  transition: "background 220ms",
-                }}
-              />
-            ))}
-          </div>
         </div>
       </div>
     )
