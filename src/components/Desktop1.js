@@ -6,6 +6,10 @@ import ingGif from "../images/ing.gif";
 import failImage from "../images/fail.png";
 import video01 from "../images/01.mp4";
 import video02 from "../images/02.mp4";
+import imgT03 from "../images/t03.png";
+import imgT04 from "../images/t04.png";
+import imgT05 from "../images/t05.png";
+import imgT06 from "../images/t06.png";
 import {
   collection,
   addDoc,
@@ -1776,11 +1780,30 @@ const showDeleteButton =
       desc: "複製想儲存的推文網址。",
       video: video02,
     },
+    {
+      image: imgT03,
+    },
+    {
+      image: imgT04,
+    },
+    {
+      image: imgT05,
+    },
+    {
+      image: imgT06,
+    },
   ];
 
   const tutorialModal = showTutorial ? (
     <div
-      onClick={() => { setShowTutorial(false); setTutorialPage(0); }}
+      onClick={() => {
+        if (tutorialPage < TUTORIAL_SLIDES.length - 1) {
+          setTutorialPage(tutorialPage + 1);
+        } else {
+          setShowTutorial(false);
+          setTutorialPage(0);
+        }
+      }}
       style={{
         position: "fixed",
         inset: 0,
@@ -1793,7 +1816,6 @@ const showDeleteButton =
     >
       {/* 內容容器 (無手機外框) */}
       <div
-        onClick={(e) => e.stopPropagation()}
         style={{
           width: 309,
           height: 555,
@@ -1850,106 +1872,94 @@ const showDeleteButton =
                   height: "100%",
                 }}
               >
-                {/* 白色大卡 */}
-                <div style={{
-                  width: TUTORIAL_CARD_WIDTH,
-                  height: 472,
-                  background: "#ffffff",
-                  borderRadius: 27,
-                  padding: "14px 14px 24px 14px",
-                  boxSizing: "border-box",
-                  display: "flex",
-                  flexDirection: "column",
-                  position: "relative",
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-                }}>
-                  {/* 黑色影音容器 */}
+                {slide.video ? (
+                  /* 白色大卡 */
                   <div style={{
-                    width: 281,
-                    height: 346,
-                    background: "#080808",
-                    borderRadius: 13,
-                    overflow: "hidden",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}>
-                    <video
-                      src={slide.video}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: i === 0 ? "cover" : "contain",
-                      }}
-                    />
-                  </div>
-
-                  {/* 標題 + 說明 */}
-                  <div style={{
-                    marginTop: 16,
-                    padding: "0 4px",
+                    width: TUTORIAL_CARD_WIDTH,
+                    height: 472,
+                    background: "#ffffff",
+                    borderRadius: 27,
+                    padding: "14px 14px 24px 14px",
+                    boxSizing: "border-box",
                     display: "flex",
                     flexDirection: "column",
-                    gap: 4,
+                    position: "relative",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
                   }}>
+                    {/* 黑色影音容器 */}
                     <div style={{
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: 16,
-                      fontWeight: 700,
-                      color: "#000000",
-                      lineHeight: "130%",
+                      width: 281,
+                      height: 346,
+                      background: "#080808",
+                      borderRadius: 13,
+                      overflow: "hidden",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}>
-                      {slide.title}
-                    </div>
-                    <div style={{
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: 12.5,
-                      color: "#595959",
-                      lineHeight: "150%",
-                    }}>
-                      {slide.desc}
-                    </div>
-                  </div>
-
-                  {/* 頁碼圓點 (在白框內顯示) */}
-                  <div style={{
-                    position: "absolute",
-                    bottom: 18,
-                    left: 0,
-                    right: 0,
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: 6,
-                    zIndex: 5,
-                  }}>
-                    {TUTORIAL_SLIDES.map((_, dotIdx) => (
-                      <div
-                        key={dotIdx}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setTutorialPage(dotIdx);
-                        }}
+                      <video
+                        src={slide.video}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
                         style={{
-                          width: 6,
-                          height: 6,
-                          borderRadius: "50%",
-                          background: dotIdx === tutorialPage ? "#000000" : "#d9d9d9",
-                          cursor: "pointer",
-                          transition: "background 220ms",
+                          width: "100%",
+                          height: "100%",
+                          objectFit: i === 0 ? "cover" : "contain",
                         }}
                       />
-                    ))}
+                    </div>
+
+                    {/* 標題 + 說明 */}
+                    <div style={{
+                      marginTop: 16,
+                      padding: "0 4px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 4,
+                    }}>
+                      <div style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: 16,
+                        fontWeight: 700,
+                        color: "#000000",
+                        lineHeight: "130%",
+                      }}>
+                        {slide.title}
+                      </div>
+                      <div style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: 12.5,
+                        color: "#595959",
+                        lineHeight: "150%",
+                      }}>
+                        {slide.desc}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  /* 教學頁 3 ~ 6 圖片滿版 */
+                  <img
+                    src={slide.image}
+                    alt={`教學頁 ${i + 1}`}
+                    draggable={false}
+                    style={{
+                      width: TUTORIAL_CARD_WIDTH,
+                      height: 555,
+                      objectFit: "contain",
+                      display: "block",
+                    }}
+                  />
+                )}
 
                 {/* 只有第二個畫面 (索引為 1) 有 下一步 按鈕 (至右) */}
                 {i === 1 && (
                   <button
-                    onClick={() => { setShowTutorial(false); setTutorialPage(0); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setTutorialPage(tutorialPage + 1);
+                    }}
                     style={{
                       marginTop: 22,
                       width: 188,
@@ -1979,6 +1989,36 @@ const showDeleteButton =
               </div>
             ))}
           </div>
+        </div>
+
+        {/* 頁碼圓點 (在白框內顯示，覆蓋在所有投影片上) */}
+        <div style={{
+          position: "absolute",
+          bottom: 101,
+          left: 0,
+          right: 0,
+          display: "flex",
+          justifyContent: "center",
+          gap: 6,
+          zIndex: 5,
+        }}>
+          {TUTORIAL_SLIDES.map((_, dotIdx) => (
+            <div
+              key={dotIdx}
+              onClick={(e) => {
+                e.stopPropagation(); // 阻止冒泡避免點擊圓點時也翻頁
+                setTutorialPage(dotIdx);
+              }}
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: dotIdx === tutorialPage ? "#000000" : "#d9d9d9",
+                cursor: "pointer",
+                transition: "background 220ms",
+              }}
+            />
+          ))}
         </div>
       </div>
     </div>
