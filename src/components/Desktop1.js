@@ -1795,85 +1795,83 @@ const showDeleteButton =
   ];
 
   const tutorialModal = showTutorial ? (
-    <div
-      onClick={() => {
-        if (tutorialPage < TUTORIAL_SLIDES.length - 1) {
-          setTutorialPage(tutorialPage + 1);
-        } else {
+    tutorialPage < 2 ? (
+      /* 模式一：教學頁 1 ~ 2 (左右滑動，有卡片邊框，背景半透明 90% 黑) */
+      <div
+        onClick={() => {
           setShowTutorial(false);
           setTutorialPage(0);
-        }
-      }}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 4000,
-        background: "rgba(0, 0, 0, 0.9)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      {/* 內容容器 (無手機外框) */}
-      <div
+        }}
         style={{
-          width: 309,
-          height: 555,
-          overflow: "hidden",
+          position: "fixed",
+          inset: 0,
+          zIndex: 4000,
+          background: "rgba(0, 0, 0, 0.9)",
           display: "flex",
-          flexDirection: "column",
-          position: "relative",
-          userSelect: "none",
-        }}
-        onTouchStart={(e) => {
-          tutorialDragRef.current = { startX: e.touches[0].clientX, dragging: true };
-        }}
-        onTouchEnd={(e) => {
-          if (!tutorialDragRef.current.dragging) return;
-          const diff = e.changedTouches[0].clientX - tutorialDragRef.current.startX;
-          tutorialDragRef.current.dragging = false;
-          if (diff < -50 && tutorialPage < TUTORIAL_SLIDES.length - 1) setTutorialPage((p) => p + 1);
-          if (diff > 50 && tutorialPage > 0) setTutorialPage((p) => p - 1);
-        }}
-        onMouseDown={(e) => {
-          tutorialDragRef.current = { startX: e.clientX, dragging: true };
-        }}
-        onMouseUp={(e) => {
-          if (!tutorialDragRef.current.dragging) return;
-          const diff = e.clientX - tutorialDragRef.current.startX;
-          tutorialDragRef.current.dragging = false;
-          if (diff < -50 && tutorialPage < TUTORIAL_SLIDES.length - 1) setTutorialPage((p) => p + 1);
-          if (diff > 50 && tutorialPage > 0) setTutorialPage((p) => p - 1);
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        {/* 滑動容器 */}
-        <div style={{ overflow: "hidden", width: TUTORIAL_CARD_WIDTH, height: "100%" }}>
-          <div
-            style={{
-              display: "flex",
-              gap: TUTORIAL_SLIDE_GAP,
-              height: "100%",
-              transform: `translateX(calc(-1 * ${tutorialPage} * (${TUTORIAL_CARD_WIDTH}px + ${TUTORIAL_SLIDE_GAP})))`,
-              transition: "transform 300ms cubic-bezier(0.2, 0.9, 0.2, 1)",
-            }}
-          >
-            {TUTORIAL_SLIDES.map((slide, i) => (
-              <div
-                key={i}
-                style={{
-                  width: TUTORIAL_CARD_WIDTH,
-                  flexShrink: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  justifyContent: "flex-start",
-                  padding: 0,
-                  boxSizing: "border-box",
-                  height: "100%",
-                }}
-              >
-                {slide.video ? (
-                  /* 白色大卡 */
+        {/* 內容容器 (309x555) */}
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            width: 309,
+            height: 555,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+            userSelect: "none",
+          }}
+          onTouchStart={(e) => {
+            tutorialDragRef.current = { startX: e.touches[0].clientX, dragging: true };
+          }}
+          onTouchEnd={(e) => {
+            if (!tutorialDragRef.current.dragging) return;
+            const diff = e.changedTouches[0].clientX - tutorialDragRef.current.startX;
+            tutorialDragRef.current.dragging = false;
+            if (diff < -50 && tutorialPage < 1) setTutorialPage((p) => p + 1);
+            if (diff > 50 && tutorialPage > 0) setTutorialPage((p) => p - 1);
+          }}
+          onMouseDown={(e) => {
+            tutorialDragRef.current = { startX: e.clientX, dragging: true };
+          }}
+          onMouseUp={(e) => {
+            if (!tutorialDragRef.current.dragging) return;
+            const diff = e.clientX - tutorialDragRef.current.startX;
+            tutorialDragRef.current.dragging = false;
+            if (diff < -50 && tutorialPage < 1) setTutorialPage((p) => p + 1);
+            if (diff > 50 && tutorialPage > 0) setTutorialPage((p) => p - 1);
+          }}
+        >
+          {/* 滑動容器 */}
+          <div style={{ overflow: "hidden", width: TUTORIAL_CARD_WIDTH, height: "100%" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: TUTORIAL_SLIDE_GAP,
+                height: "100%",
+                transform: `translateX(calc(-1 * ${tutorialPage} * (${TUTORIAL_CARD_WIDTH}px + ${TUTORIAL_SLIDE_GAP})))`,
+                transition: "transform 300ms cubic-bezier(0.2, 0.9, 0.2, 1)",
+              }}
+            >
+              {TUTORIAL_SLIDES.slice(0, 2).map((slide, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: TUTORIAL_CARD_WIDTH,
+                    flexShrink: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    justifyContent: "flex-start",
+                    padding: 0,
+                    boxSizing: "border-box",
+                    height: "100%",
+                  }}
+                >
+                  {/* 白色大卡 */}
                   <div style={{
                     width: TUTORIAL_CARD_WIDTH,
                     height: 472,
@@ -1938,90 +1936,154 @@ const showDeleteButton =
                       </div>
                     </div>
                   </div>
-                ) : (
-                  /* 教學頁 3 ~ 6 圖片滿版 */
-                  <img
-                    src={slide.image}
-                    alt={`教學頁 ${i + 1}`}
-                    draggable={false}
-                    style={{
-                      width: TUTORIAL_CARD_WIDTH,
-                      height: 555,
-                      objectFit: "contain",
-                      display: "block",
-                    }}
-                  />
-                )}
 
-                {/* 只有第二個畫面 (索引為 1) 有 下一步 按鈕 (至右) */}
-                {i === 1 && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setTutorialPage(tutorialPage + 1);
-                    }}
-                    style={{
-                      marginTop: 22,
-                      width: 188,
-                      height: 61,
-                      borderRadius: 30,
-                      background: "#00C3D0",
-                      border: "none",
-                      color: "#ffffff",
-                      fontSize: 17,
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      alignSelf: "flex-end",
-                      boxShadow: "0 6px 16px rgba(0, 195, 208, 0.3)",
-                      transition: "transform 0.15s, background-color 0.15s",
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#00b2bd"}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#00C3D0"}
-                    onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.96)"}
-                    onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
-                  >
-                    下一步
-                  </button>
-                )}
-              </div>
+                  {/* 只有第二個畫面 (索引為 1) 有 下一步 按鈕 (至右) */}
+                  {i === 1 && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setTutorialPage(2);
+                      }}
+                      style={{
+                        marginTop: 22,
+                        width: 188,
+                        height: 61,
+                        borderRadius: 30,
+                        background: "#00C3D0",
+                        border: "none",
+                        color: "#ffffff",
+                        fontSize: 17,
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        alignSelf: "flex-end",
+                        boxShadow: "0 6px 16px rgba(0, 195, 208, 0.3)",
+                        transition: "transform 0.15s, background-color 0.15s",
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#00b2bd"}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#00C3D0"}
+                      onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.96)"}
+                      onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"}
+                    >
+                      下一步
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 頁碼圓點 (在卡片底部內) */}
+          <div style={{
+            position: "absolute",
+            bottom: 101,
+            left: 0,
+            right: 0,
+            display: "flex",
+            justifyContent: "center",
+            gap: 6,
+            zIndex: 5,
+          }}>
+            {TUTORIAL_SLIDES.map((_, dotIdx) => (
+              <div
+                key={dotIdx}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTutorialPage(dotIdx);
+                }}
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: dotIdx === tutorialPage ? "#000000" : "#d9d9d9",
+                  cursor: "pointer",
+                  transition: "background 220ms",
+                }}
+              />
             ))}
           </div>
         </div>
-
-        {/* 頁碼圓點 (在白框內顯示，覆蓋在所有投影片上) */}
-        <div style={{
-          position: "absolute",
-          bottom: 101,
-          left: 0,
-          right: 0,
+      </div>
+    ) : (
+      /* 模式二：教學頁 3 ~ 6 (點擊任意處進入下一頁，無卡片邊框，背景實色純黑，圖片放大至整個畫面) */
+      <div
+        onClick={() => {
+          if (tutorialPage < TUTORIAL_SLIDES.length - 1) {
+            setTutorialPage(tutorialPage + 1);
+          } else {
+            setShowTutorial(false);
+            setTutorialPage(0);
+          }
+        }}
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 4000,
+          background: "#000000",
           display: "flex",
+          alignItems: "center",
           justifyContent: "center",
-          gap: 6,
-          zIndex: 5,
-        }}>
-          {TUTORIAL_SLIDES.map((_, dotIdx) => (
-            <div
-              key={dotIdx}
-              onClick={(e) => {
-                e.stopPropagation(); // 阻止冒泡避免點擊圓點時也翻頁
-                setTutorialPage(dotIdx);
-              }}
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: dotIdx === tutorialPage ? "#000000" : "#d9d9d9",
-                cursor: "pointer",
-                transition: "background 220ms",
-              }}
-            />
-          ))}
+          cursor: "pointer",
+        }}
+      >
+        {/* 滿版圖片容器 */}
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <img
+            src={TUTORIAL_SLIDES[tutorialPage].image}
+            alt={`教學頁 ${tutorialPage + 1}`}
+            draggable={false}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+            }}
+          />
+
+          {/* 頁碼圓點 */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: "14%",
+              left: 0,
+              right: 0,
+              display: "flex",
+              justifyContent: "center",
+              gap: 6,
+              zIndex: 5,
+            }}
+          >
+            {TUTORIAL_SLIDES.map((_, dotIdx) => (
+              <div
+                key={dotIdx}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTutorialPage(dotIdx);
+                }}
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: dotIdx === tutorialPage ? "#000000" : "#d9d9d9",
+                  cursor: "pointer",
+                  transition: "background 220ms",
+                }}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    )
   ) : null;
 
   const openExpandedPreview = (pageUrl, title = "", imageUrl = "", originRect = null) => {
