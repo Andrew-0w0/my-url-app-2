@@ -6,6 +6,10 @@ import ingGif from "../images/ing.gif";
 import failImage from "../images/fail.png";
 import video01 from "../images/01.mp4";
 import video02 from "../images/02.mp4";
+import imgT03 from "../images/t03.png";
+import imgT04 from "../images/t04.png";
+import imgT05 from "../images/t05.png";
+import imgT06 from "../images/t06.png";
 import {
   collection,
   addDoc,
@@ -1831,18 +1835,22 @@ const showDeleteButton =
     {
       title: "點擊按鈕",
       desc: "回到圖卡網站點擊貼上按鈕，圖卡會到頁面中加載約一到兩秒。",
+      image: imgT03,
     },
     {
       title: "首頁",
       desc: "首頁的圖片內容公開，進到圖卡網站的用戶都能看到。首頁禁止上傳 R18 圖片。",
+      image: imgT04,
     },
     {
       title: "個人頁",
       desc: "個人圖卡僅限該帳號顯示，其他用戶無法查看。具備圖卡組功能，更方便分類您儲存的圖卡。",
+      image: imgT05,
     },
     {
       title: "更多選單",
       desc: "編輯模式能修改圖卡的名稱和刪除圖卡。放大按鈕切換單欄雙欄編排。加入主畫面功能在Android、MacOS和Windows系統的Chrome中直接新增到桌面。圖卡組在個人頁中把多個圖卡集合在其中，也能隨時移出圖卡。",
+      image: imgT06,
     },
   ];
 
@@ -2070,194 +2078,242 @@ const showDeleteButton =
         </div>
       </div>
     ) : (
-      /* 模式二：教學頁 3 ~ 6 (點擊任意處進入下一頁，採用 Coachmarks 互動式元素聚焦導覽，背景完全透明) */
-      (() => {
-        const slide = TUTORIAL_SLIDES[tutorialPage];
-        
-        // 預設提示框與箭頭樣式計算
-        let tooltipStyle = {};
-        let arrowStyle = {};
-        
-        if (highlightRect) {
-          const isBelow = highlightRect.y <= window.innerHeight / 2;
-          let left = highlightRect.x + highlightRect.width / 2 - 125;
-          if (left < 16) left = 16;
-          if (left + 250 > window.innerWidth - 16) left = window.innerWidth - 250 - 16;
-
-          const arrowLeft = highlightRect.x + highlightRect.width / 2 - left - 6;
-
-          if (isBelow) {
-            tooltipStyle = {
-              position: "fixed",
-              top: highlightRect.bottom + 16,
-              left: left,
-              width: 250,
-              background: "#ffffff",
-              borderRadius: 16,
-              padding: "16px 16px 18px 16px",
-              boxShadow: "0 8px 30px rgba(0, 0, 0, 0.25)",
-              color: "#000000",
-              boxSizing: "border-box",
-              zIndex: 4002,
-              display: "flex",
-              flexDirection: "column",
-              gap: 4,
-            };
-            arrowStyle = {
-              position: "absolute",
-              top: -6,
-              left: arrowLeft,
-              width: 0,
-              height: 0,
-              borderLeft: "6px solid transparent",
-              borderRight: "6px solid transparent",
-              borderBottom: "6px solid #ffffff",
-            };
-          } else {
-            tooltipStyle = {
-              position: "fixed",
-              bottom: window.innerHeight - highlightRect.y + 16,
-              left: left,
-              width: 250,
-              background: "#ffffff",
-              borderRadius: 16,
-              padding: "16px 16px 18px 16px",
-              boxShadow: "0 8px 30px rgba(0, 0, 0, 0.25)",
-              color: "#000000",
-              boxSizing: "border-box",
-              zIndex: 4002,
-              display: "flex",
-              flexDirection: "column",
-              gap: 4,
-            };
-            arrowStyle = {
-              position: "absolute",
-              bottom: -6,
-              left: arrowLeft,
-              width: 0,
-              height: 0,
-              borderLeft: "6px solid transparent",
-              borderRight: "6px solid transparent",
-              borderTop: "6px solid #ffffff",
-            };
-          }
-        }
-
-        return (
+      /* 模式二：教學頁 3 ~ 6 */
+      isMobile ? (
+        /* 手機版：點擊任意處進入下一頁，無卡片邊框，背景完全透明，圖片放大至整個畫面 */
+        <div
+          onClick={() => {
+            if (tutorialPage < TUTORIAL_SLIDES.length - 1) {
+              setTutorialPage(tutorialPage + 1);
+            } else {
+              setShowTutorial(false);
+              setTutorialPage(0);
+            }
+          }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 4000,
+            background: "transparent",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          {/* 滿版圖片容器 */}
           <div
-            onClick={() => {
-              if (tutorialPage < TUTORIAL_SLIDES.length - 1) {
-                setTutorialPage(tutorialPage + 1);
-              } else {
-                setShowTutorial(false);
-                setTutorialPage(0);
-              }
-            }}
             style={{
-              position: "fixed",
-              inset: 0,
-              zIndex: 4000,
-              background: highlightRect ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.4)", // 有高亮時輕微變暗凸顯，無高亮時較暗
+              position: "relative",
+              width: "100%",
+              height: "100%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              cursor: "pointer",
             }}
           >
-            {pulseStyle}
+            <img
+              src={TUTORIAL_SLIDES[tutorialPage].image}
+              alt={`教學頁 ${tutorialPage + 1}`}
+              draggable={false}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+              }}
+            />
+          </div>
+        </div>
+      ) : (
+        /* 電腦版：採用 Coachmarks 互動式元素聚焦導覽，背景完全透明 */
+        (() => {
+          const slide = TUTORIAL_SLIDES[tutorialPage];
+          
+          // 預設提示框與箭頭樣式計算
+          let tooltipStyle = {};
+          let arrowStyle = {};
+          
+          if (highlightRect) {
+            const isBelow = highlightRect.y <= window.innerHeight / 2;
+            let left = highlightRect.x + highlightRect.width / 2 - 125;
+            if (left < 16) left = 16;
+            if (left + 250 > window.innerWidth - 16) left = window.innerWidth - 250 - 16;
 
-            {/* 高亮聚焦框 */}
-            {highlightRect && (
-              <div
-                style={{
-                  position: "fixed",
-                  left: highlightRect.x - 6,
-                  top: highlightRect.y - 6,
-                  width: highlightRect.width + 12,
-                  height: highlightRect.height + 12,
-                  borderRadius: 12,
-                  border: "2px solid #00C3D0",
-                  boxShadow: "0 0 16px #00C3D0, inset 0 0 4px #00C3D0",
-                  pointerEvents: "none",
-                  animation: "tutorial-pulse 2s infinite ease-in-out",
-                  zIndex: 4001,
-                }}
-              />
-            )}
+            const arrowLeft = highlightRect.x + highlightRect.width / 2 - left - 6;
 
-            {/* 提示框 card */}
-            {highlightRect ? (
-              <div style={tooltipStyle}>
-                <div style={arrowStyle} />
-                <div style={{
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: "#000000",
-                }}>
-                  {slide.title}
-                </div>
-                <div style={{
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: 12.5,
-                  color: "#595959",
-                  lineHeight: "150%",
-                }}>
-                  {slide.desc}
-                </div>
-                <div style={{
-                  marginTop: 6,
-                  fontSize: 11,
-                  color: "#9e9e9e",
-                  textAlign: "right",
-                }}>
-                  點擊任意處繼續 (頁 {tutorialPage + 1}/6)
-                </div>
-              </div>
-            ) : (
-              /* Fallback 居中提示框 */
-              <div style={{
-                width: 290,
+            if (isBelow) {
+              tooltipStyle = {
+                position: "fixed",
+                top: highlightRect.bottom + 16,
+                left: left,
+                width: 250,
                 background: "#ffffff",
-                borderRadius: 20,
-                padding: "20px 20px 24px 20px",
-                boxSizing: "border-box",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+                borderRadius: 16,
+                padding: "16px 16px 18px 16px",
+                boxShadow: "0 8px 30px rgba(0, 0, 0, 0.25)",
                 color: "#000000",
-                textAlign: "left",
+                boxSizing: "border-box",
+                zIndex: 4002,
                 display: "flex",
                 flexDirection: "column",
-                gap: 6,
-              }}>
+                gap: 4,
+              };
+              arrowStyle = {
+                position: "absolute",
+                top: -6,
+                left: arrowLeft,
+                width: 0,
+                height: 0,
+                borderLeft: "6px solid transparent",
+                borderRight: "6px solid transparent",
+                borderBottom: "6px solid #ffffff",
+              };
+            } else {
+              tooltipStyle = {
+                position: "fixed",
+                bottom: window.innerHeight - highlightRect.y + 16,
+                left: left,
+                width: 250,
+                background: "#ffffff",
+                borderRadius: 16,
+                padding: "16px 16px 18px 16px",
+                boxShadow: "0 8px 30px rgba(0, 0, 0, 0.25)",
+                color: "#000000",
+                boxSizing: "border-box",
+                zIndex: 4002,
+                display: "flex",
+                flexDirection: "column",
+                gap: 4,
+              };
+              arrowStyle = {
+                position: "absolute",
+                bottom: -6,
+                left: arrowLeft,
+                width: 0,
+                height: 0,
+                borderLeft: "6px solid transparent",
+                borderRight: "6px solid transparent",
+                borderTop: "6px solid #ffffff",
+              };
+            }
+          }
+
+          return (
+            <div
+              onClick={() => {
+                if (tutorialPage < TUTORIAL_SLIDES.length - 1) {
+                  setTutorialPage(tutorialPage + 1);
+                } else {
+                  setShowTutorial(false);
+                  setTutorialPage(0);
+                }
+              }}
+              style={{
+                position: "fixed",
+                inset: 0,
+                zIndex: 4000,
+                background: highlightRect ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.4)", // 有高亮時輕微變暗凸顯，無高亮時較暗
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              {pulseStyle}
+
+              {/* 高亮聚焦框 */}
+              {highlightRect && (
+                <div
+                  style={{
+                    position: "fixed",
+                    left: highlightRect.x - 6,
+                    top: highlightRect.y - 6,
+                    width: highlightRect.width + 12,
+                    height: highlightRect.height + 12,
+                    borderRadius: 12,
+                    border: "2px solid #00C3D0",
+                    boxShadow: "0 0 16px #00C3D0, inset 0 0 4px #00C3D0",
+                    pointerEvents: "none",
+                    animation: "tutorial-pulse 2s infinite ease-in-out",
+                    zIndex: 4001,
+                  }}
+                />
+              )}
+
+              {/* 提示框 card */}
+              {highlightRect ? (
+                <div style={tooltipStyle}>
+                  <div style={arrowStyle} />
+                  <div style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 16,
+                    fontWeight: 700,
+                    color: "#000000",
+                  }}>
+                    {slide.title}
+                  </div>
+                  <div style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 12.5,
+                    color: "#595959",
+                    lineHeight: "150%",
+                  }}>
+                    {slide.desc}
+                  </div>
+                  <div style={{
+                    marginTop: 6,
+                    fontSize: 11,
+                    color: "#9e9e9e",
+                    textAlign: "right",
+                  }}>
+                    點擊任意處繼續 (頁 {tutorialPage + 1}/6)
+                  </div>
+                </div>
+              ) : (
+                /* Fallback 居中提示框 */
                 <div style={{
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: 18,
-                  fontWeight: 700,
+                  width: 290,
+                  background: "#ffffff",
+                  borderRadius: 20,
+                  padding: "20px 20px 24px 20px",
+                  boxSizing: "border-box",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
                   color: "#000000",
+                  textAlign: "left",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 6,
                 }}>
-                  {slide.title}
+                  <div style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: "#000000",
+                  }}>
+                    {slide.title}
+                  </div>
+                  <div style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: 13.5,
+                    color: "#595959",
+                    lineHeight: "150%",
+                  }}>
+                    {slide.desc}
+                  </div>
+                  <div style={{
+                    marginTop: 12,
+                    fontSize: 12,
+                    color: "#9e9e9e",
+                    textAlign: "right",
+                  }}>
+                    點擊任意處繼續 (頁 {tutorialPage + 1}/6)
+                  </div>
                 </div>
-                <div style={{
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: 13.5,
-                  color: "#595959",
-                  lineHeight: "150%",
-                }}>
-                  {slide.desc}
-                </div>
-                <div style={{
-                  marginTop: 12,
-                  fontSize: 12,
-                  color: "#9e9e9e",
-                  textAlign: "right",
-                }}>
-                  點擊任意處繼續 (頁 {tutorialPage + 1}/6)
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      })()
+              )}
+            </div>
+          );
+        })()
+      )
     )
   ) : null;
 
