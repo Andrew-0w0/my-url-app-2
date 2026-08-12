@@ -1869,10 +1869,6 @@ const showDeleteButton =
     tutorialPage < 2 ? (
       /* 模式一：教學頁 1 ~ 2 (左右滑動，有卡片邊框，背景半透明 90% 黑) */
       <div
-        onClick={() => {
-          setShowTutorial(false);
-          setTutorialPage(0);
-        }}
         style={{
           position: "fixed",
           inset: 0,
