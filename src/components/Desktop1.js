@@ -1986,7 +1986,7 @@ const showDeleteButton =
             gap: 6,
             zIndex: 5,
           }}>
-            {TUTORIAL_SLIDES.map((_, dotIdx) => (
+            {TUTORIAL_SLIDES.slice(0, 2).map((_, dotIdx) => (
               <div
                 key={dotIdx}
                 onClick={(e) => {
